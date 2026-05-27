@@ -76,9 +76,16 @@
 
         <div class="about__content">
 
-          <!-- 프로필 이미지 영역 (images/ 폴더에 photo.jpg 추가 시 교체 가능) -->
+          <!-- 프로필 이미지 (images/profile.png 파일로 교체) -->
           <div class="about__image animate-on-scroll">
-            <div class="about__photo-placeholder">
+            <img
+              src="images/profile.png"
+              alt="김현서 프로필 사진"
+              class="about__photo"
+              id="profile-img"
+            />
+            <!-- 이미지 로드 실패 시 폴백 플레이스홀더 (JS에서 토글) -->
+            <div class="about__photo-placeholder hidden" id="profile-placeholder">
               <i class="fas fa-user"></i>
             </div>
           </div>

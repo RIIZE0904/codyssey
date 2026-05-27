@@ -3,6 +3,19 @@
    흐름: 이벤트 → 상태 변경 → DOM 업데이트
    ============================================================ */
 
+/* ===== 프로필 이미지 에러 핸들링 =====
+   이미지 로드 실패 시(파일 없음 등) 플레이스홀더로 대체
+   ===================================================== */
+
+const profileImg         = document.getElementById('profile-img');
+const profilePlaceholder = document.getElementById('profile-placeholder');
+
+profileImg.addEventListener('error', () => {
+  profileImg.classList.add('hidden');
+  profilePlaceholder.classList.remove('hidden');
+});
+
+
 /* ===== 다크 모드 토글 =====
    상태: isDark (boolean)
    저장: localStorage → 새로고침 후에도 유지

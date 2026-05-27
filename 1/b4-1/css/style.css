@@ -370,7 +370,16 @@ button {
   flex-shrink: 0;
 }
 
-/* 프로필 사진 플레이스홀더: images/photo.jpg 추가 시 대체 가능 */
+/* 프로필 실제 사진 */
+.about__photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+}
+
+/* 프로필 사진 플레이스홀더: 이미지 로드 실패 시 표시 */
 .about__photo-placeholder {
   width: 200px;
   height: 200px;
