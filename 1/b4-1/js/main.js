@@ -1,178 +1,181 @@
 /* ============================================================
    main.js — 포트폴리오 인터랙션 전체 담당
-   흐름: 이벤트 → 상태 변경 → DOM 업데이트
+   핵심 흐름: 사용자 이벤트 → 상태 변경 → DOM 업데이트
    ============================================================ */
 
+/* ===== DOM 선택 도우미 ===== */
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+
 /* ===== 프로필 이미지 에러 핸들링 =====
-   이미지 로드 실패 시(파일 없음 등) 플레이스홀더로 대체
-   ===================================================== */
+   이미지 파일이 없거나 로드에 실패하면 플레이스홀더를 보여준다.
+   ============================================================ */
+const profileImg = $('#profile-img');
+const profilePlaceholder = $('#profile-placeholder');
 
-const profileImg         = document.getElementById('profile-img');
-const profilePlaceholder = document.getElementById('profile-placeholder');
-
-profileImg.addEventListener('error', () => {
-  profileImg.classList.add('hidden');
-  profilePlaceholder.classList.remove('hidden');
-});
-
+if (profileImg && profilePlaceholder) {
+  profileImg.addEventListener('error', () => {
+    profileImg.classList.add('hidden');
+    profilePlaceholder.classList.remove('hidden');
+  });
+}
 
 /* ===== 다크 모드 토글 =====
-   상태: isDark (boolean)
-   저장: localStorage → 새로고침 후에도 유지
-   렌더링: body.dark 클래스 + 아이콘 교체
-   ===================================================== */
+   상태: currentTheme
+   저장: localStorage
+   렌더링: html[data-theme] + 아이콘 + aria-pressed 변경
+   ============================================================ */
+const root = document.documentElement;
+const darkToggle = $('#dark-toggle');
+const darkToggleIcon = darkToggle?.querySelector('i');
 
-const darkToggle = document.getElementById('dark-toggle');
-const body = document.body;
+let currentTheme = localStorage.getItem('theme') || 'light';
 
-// localStorage에서 이전 설정 불러오기 (없으면 라이트 모드)
-let isDark = localStorage.getItem('theme') === 'dark';
-
-// 현재 isDark 상태를 화면에 반영하는 함수
 const applyTheme = () => {
-  if (isDark) {
-    body.classList.add('dark');
-    darkToggle.querySelector('i').className = 'fas fa-sun';  // 다크 → 태양 아이콘
-  } else {
-    body.classList.remove('dark');
-    darkToggle.querySelector('i').className = 'fas fa-moon'; // 라이트 → 달 아이콘
+  root.setAttribute('data-theme', currentTheme);
+
+  const isDark = currentTheme === 'dark';
+  darkToggle?.setAttribute('aria-pressed', String(isDark));
+
+  if (darkToggleIcon) {
+    darkToggleIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
   }
 };
 
-// 초기 테마 적용
 applyTheme();
 
-// 이벤트: 버튼 클릭 → 상태 반전 → 저장 → 화면 업데이트
-darkToggle.addEventListener('click', () => {
-  isDark = !isDark;
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+darkToggle?.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', currentTheme);
   applyTheme();
 });
 
-
 /* ===== 햄버거 메뉴 =====
-   이벤트: 클릭 → active 클래스 토글 → 메뉴 슬라이드다운
-   classList.toggle('active') 활용
-   ===================================================== */
+   모바일에서 메뉴 상태를 active 클래스로 관리한다.
+   ============================================================ */
+const hamburger = $('#hamburger');
+const navMenu = $('#nav-menu');
 
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
+const closeMobileMenu = () => {
+  hamburger?.classList.remove('active');
+  navMenu?.classList.remove('active');
+  hamburger?.setAttribute('aria-expanded', 'false');
+  hamburger?.setAttribute('aria-label', '메뉴 열기');
+};
 
-// 햄버거 버튼 클릭: 메뉴 열기/닫기
-hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('active'); // X 모양 전환
-  navMenu.classList.toggle('active');   // 메뉴 슬라이드다운
+hamburger?.addEventListener('click', () => {
+  const isOpen = hamburger.classList.toggle('active');
+  navMenu?.classList.toggle('active', isOpen);
+  hamburger.setAttribute('aria-expanded', String(isOpen));
+  hamburger.setAttribute('aria-label', isOpen ? '메뉴 닫기' : '메뉴 열기');
 });
 
-// 메뉴 링크 클릭 시 자동으로 메뉴 닫기
-navMenu.querySelectorAll('.nav__link').forEach(link => {
-  link.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-  });
+$$('.nav__link').forEach((link) => {
+  link.addEventListener('click', closeMobileMenu);
 });
-
 
 /* ===== 스크롤 이벤트 =====
-   기준값: 네비 스타일 변경 60px / 스크롤탑 버튼 표시 300px
-   이벤트: scroll → 기준값 비교 → 클래스 추가/제거
-   ===================================================== */
+   60px 이상: 네비게이션 스타일 변경
+   300px 이상: 스크롤 탑 버튼 표시
+   ============================================================ */
+const header = $('#header');
+const scrollTopBtn = $('#scroll-top');
 
-const header = document.getElementById('header');
-const scrollTopBtn = document.getElementById('scroll-top');
-
-window.addEventListener('scroll', () => {
+const handleScroll = () => {
   const scrollY = window.scrollY;
+  header?.classList.toggle('scrolled', scrollY >= 60);
+  scrollTopBtn?.classList.toggle('hidden', scrollY < 300);
+};
 
-  // 네비게이션: 60px 이상 스크롤 시 배경/그림자 추가
-  header.classList.toggle('scrolled', scrollY >= 60);
+window.addEventListener('scroll', handleScroll);
+handleScroll();
 
-  // 스크롤탑 버튼: 300px 이상 스크롤 시 표시
-  scrollTopBtn.classList.toggle('hidden', scrollY < 300);
-});
-
-// 스크롤탑 버튼 클릭: 맨 위로 부드럽게 이동
-scrollTopBtn.addEventListener('click', () => {
+scrollTopBtn?.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-
-/* ===== 스크롤 애니메이션 (Intersection Observer) =====
-   threshold: 0.2 → 요소가 20% 이상 뷰포트에 들어올 때 트리거
-   이벤트: 요소 노출 → .visible 클래스 추가 → CSS 트랜지션 실행
-   ===================================================== */
-
-const animateElements = document.querySelectorAll('.animate-on-scroll');
+/* ===== 스크롤 애니메이션 =====
+   threshold 0.2: 요소가 20% 이상 보이면 visible 클래스 추가
+   ============================================================ */
+const animateElements = $$('.animate-on-scroll');
 
 const scrollObserver = new IntersectionObserver(
   (entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        scrollObserver.unobserve(entry.target); // 한 번 실행 후 감시 해제
+        scrollObserver.unobserve(entry.target);
       }
     });
   },
-  { threshold: 0.2 } // 20% 이상 노출 시 실행
+  { threshold: 0.2 }
 );
 
-animateElements.forEach(el => scrollObserver.observe(el));
-
+animateElements.forEach((element) => scrollObserver.observe(element));
 
 /* ===== GitHub API 연동 =====
-   엔드포인트: https://api.github.com/users/RIIZE0904/repos
-   상태: loading → success / error / empty
-   async/await + try/catch 로 비동기 처리
-   ===================================================== */
-
+   로딩 → 성공 / 에러 / 빈 상태를 UI로 표현한다.
+   ============================================================ */
 const GITHUB_USERNAME = 'RIIZE0904';
 
-// DOM 요소 참조
-const projectsGrid = document.getElementById('projects-grid');
-const statusLoading = document.getElementById('status-loading');
-const statusError   = document.getElementById('status-error');
-const statusEmpty   = document.getElementById('status-empty');
-const retryBtn      = document.getElementById('retry-btn');
+const projectsGrid = $('#projects-grid');
+const statusLoading = $('#status-loading');
+const statusError = $('#status-error');
+const statusEmpty = $('#status-empty');
+const retryBtn = $('#retry-btn');
 
-// 상태별 UI 전환 함수: 현재 상태에 맞는 요소만 표시
 const showStatus = (status) => {
-  statusLoading.classList.add('hidden');
-  statusError.classList.add('hidden');
-  statusEmpty.classList.add('hidden');
-  projectsGrid.classList.add('hidden');
+  statusLoading?.classList.add('hidden');
+  statusError?.classList.add('hidden');
+  statusEmpty?.classList.add('hidden');
+  projectsGrid?.classList.add('hidden');
 
-  if (status === 'loading') statusLoading.classList.remove('hidden');
-  if (status === 'error')   statusError.classList.remove('hidden');
-  if (status === 'empty')   statusEmpty.classList.remove('hidden');
-  if (status === 'success') projectsGrid.classList.remove('hidden');
+  if (status === 'loading') statusLoading?.classList.remove('hidden');
+  if (status === 'error') statusError?.classList.remove('hidden');
+  if (status === 'empty') statusEmpty?.classList.remove('hidden');
+  if (status === 'success') projectsGrid?.classList.remove('hidden');
 };
 
-// 프로젝트 카드 HTML 생성 함수 (템플릿 리터럴 활용)
-// 구조분해 할당으로 필요한 필드만 추출
-const createProjectCard = ({ name, description, stargazers_count, language, html_url, updated_at }) => {
-  const updatedDate = new Date(updated_at).toLocaleDateString('ko-KR');
-  const desc = description || '설명이 없습니다.';
+const escapeHtml = (value) => String(value)
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#039;');
+
+const createProjectCard = ({
+  name,
+  description,
+  stargazers_count: stars,
+  language,
+  html_url: htmlUrl,
+  updated_at: updatedAt,
+}) => {
+  const updatedDate = new Date(updatedAt).toLocaleDateString('ko-KR');
+  const safeName = escapeHtml(name);
+  const safeDescription = escapeHtml(description || '설명이 없습니다.');
+  const safeLanguage = language ? escapeHtml(language) : '';
+  const safeUrl = escapeHtml(htmlUrl);
 
   return `
     <article class="project-card">
       <div class="project-card__header">
-        <i class="fas fa-code-branch"></i>
-        <h3 class="project-card__name">${name}</h3>
+        <i class="fas fa-code-branch" aria-hidden="true"></i>
+        <h3 class="project-card__name">${safeName}</h3>
       </div>
-      <p class="project-card__desc">${desc}</p>
+      <p class="project-card__desc">${safeDescription}</p>
       <div class="project-card__meta">
-        ${language ? `<span><span class="lang-dot"></span>${language}</span>` : ''}
-        <span><i class="fas fa-star"></i> ${stargazers_count}</span>
-        <span><i class="fas fa-clock"></i> ${updatedDate}</span>
+        ${safeLanguage ? `<span><span class="lang-dot"></span>${safeLanguage}</span>` : ''}
+        <span><i class="fas fa-star" aria-hidden="true"></i> ${stars}</span>
+        <span><i class="fas fa-clock" aria-hidden="true"></i> ${updatedDate}</span>
       </div>
-      <a href="${html_url}" target="_blank" rel="noopener" class="project-card__link">
-        GitHub에서 보기 <i class="fas fa-arrow-right"></i>
+      <a href="${safeUrl}" target="_blank" rel="noopener" class="project-card__link">
+        GitHub에서 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </article>
   `;
 };
 
-// GitHub API 호출 함수
 const fetchProjects = async () => {
   showStatus('loading');
 
@@ -181,112 +184,97 @@ const fetchProjects = async () => {
       `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`
     );
 
-    // 403: 레이트 리밋 초과 / 기타 HTTP 오류 처리
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
 
     const repos = await response.json();
-
-    // fork된 저장소 제외 (filter 활용)
-    const ownRepos = repos.filter(repo => !repo.fork);
+    const ownRepos = repos.filter((repo) => !repo.fork);
 
     if (ownRepos.length === 0) {
       showStatus('empty');
       return;
     }
 
-    // 각 저장소를 카드 HTML로 변환 (map 활용) → join으로 하나의 문자열로 합치기
     projectsGrid.innerHTML = ownRepos.map(createProjectCard).join('');
     showStatus('success');
-
   } catch (error) {
     console.error('GitHub API 오류:', error);
     showStatus('error');
   }
 };
 
-// 다시 시도 버튼 클릭 이벤트
-retryBtn.addEventListener('click', fetchProjects);
-
-// 페이지 로드 시 즉시 호출
+retryBtn?.addEventListener('click', fetchProjects);
 fetchProjects();
 
-
 /* ===== 폼 유효성 검사 =====
-   상태: 각 필드별 에러 여부
-   이벤트: submit → 검사 → 에러 메시지 표시 or 성공 메시지
-   event.preventDefault()로 기본 제출 동작 차단
-   ===================================================== */
+   submit → 값 검사 → 에러 표시 또는 성공 메시지 표시
+   ============================================================ */
+const contactForm = $('#contact-form');
+const formSuccess = $('#form-success');
 
-const contactForm = document.getElementById('contact-form');
-const formSuccess  = document.getElementById('form-success');
-
-// 이메일 형식 정규식 검증
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-// 필드에 에러 표시: 빨간 테두리 + 에러 메시지
-const showFieldError = (fieldId, errorId, message) => {
-  document.getElementById(fieldId).classList.add('error');
-  document.getElementById(errorId).textContent = message;
+const showFieldError = (fieldId, message) => {
+  const field = $(`#${fieldId}`);
+  const error = $(`#${fieldId}-error`);
+
+  field?.classList.add('error');
+  field?.setAttribute('aria-invalid', 'true');
+  if (error) error.textContent = message;
 };
 
-// 필드 에러 초기화: 테두리 복구 + 메시지 제거
-const clearFieldError = (fieldId, errorId) => {
-  document.getElementById(fieldId).classList.remove('error');
-  document.getElementById(errorId).textContent = '';
+const clearFieldError = (fieldId) => {
+  const field = $(`#${fieldId}`);
+  const error = $(`#${fieldId}-error`);
+
+  field?.classList.remove('error');
+  field?.setAttribute('aria-invalid', 'false');
+  if (error) error.textContent = '';
 };
 
-// 입력 중 실시간 에러 해제 (forEach 활용)
-['name', 'email', 'message'].forEach(fieldId => {
-  document.getElementById(fieldId).addEventListener('input', () => {
-    clearFieldError(fieldId, `${fieldId}-error`);
+['name', 'email', 'message'].forEach((fieldId) => {
+  $(`#${fieldId}`)?.addEventListener('input', () => {
+    clearFieldError(fieldId);
   });
 });
 
-// 폼 제출 처리
-contactForm.addEventListener('submit', (event) => {
-  event.preventDefault(); // 기본 폼 제출(페이지 리로드) 방지
+contactForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-  // 구조분해 할당으로 입력값 한꺼번에 추출 + 공백 제거
-  const { name, email, message } = {
-    name:    document.getElementById('name').value.trim(),
-    email:   document.getElementById('email').value.trim(),
-    message: document.getElementById('message').value.trim(),
+  const formData = {
+    name: $('#name')?.value.trim() || '',
+    email: $('#email')?.value.trim() || '',
+    message: $('#message')?.value.trim() || '',
   };
 
+  const { name, email, message } = formData;
   let hasError = false;
 
-  // 이름: 빈 값 검사
   if (!name) {
-    showFieldError('name', 'name-error', '이름을 입력해주세요.');
+    showFieldError('name', '이름을 입력해주세요.');
     hasError = true;
   }
 
-  // 이메일: 빈 값 → 형식 검사 순서로 진행
   if (!email) {
-    showFieldError('email', 'email-error', '이메일을 입력해주세요.');
+    showFieldError('email', '이메일을 입력해주세요.');
     hasError = true;
   } else if (!isValidEmail(email)) {
-    showFieldError('email', 'email-error', '올바른 이메일 형식을 입력해주세요.');
+    showFieldError('email', '올바른 이메일 형식을 입력해주세요.');
     hasError = true;
   }
 
-  // 메시지: 빈 값 검사
   if (!message) {
-    showFieldError('message', 'message-error', '메시지를 입력해주세요.');
+    showFieldError('message', '메시지를 입력해주세요.');
     hasError = true;
   }
 
-  // 에러가 하나라도 있으면 제출 중단
   if (hasError) return;
 
-  // 모든 검사 통과: 폼 초기화 + 성공 메시지 표시
   contactForm.reset();
-  formSuccess.classList.remove('hidden');
+  formSuccess?.classList.remove('hidden');
 
-  // 3초 후 성공 메시지 자동 숨김
   setTimeout(() => {
-    formSuccess.classList.add('hidden');
+    formSuccess?.classList.add('hidden');
   }, 3000);
 });

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="컴퓨터공학도 김현서의 포트폴리오 웹사이트입니다." />
   <title>김현서 | Portfolio</title>
 
   <!-- 웹 폰트: Noto Sans KR(한글), Poppins(영문) -->
@@ -10,37 +11,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- 아이콘: Font Awesome -->
+  <!-- 아이콘: Font Awesome은 과제에서 허용된 외부 리소스 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <!-- 외부 스타일시트 연결 -->
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- JavaScript 파일 defer 연결: HTML 파싱 완료 후 실행 -->
+  <script src="js/main.js" defer></script>
 </head>
 <body>
-
   <!-- ===== HEADER: 고정 네비게이션 바 ===== -->
   <header class="header" id="header">
-    <nav class="nav container">
+    <nav class="nav container" aria-label="주요 메뉴">
+      <a href="#hero" class="nav__logo" aria-label="홈으로 이동">KHS</a>
 
-      <!-- 로고 -->
-      <a href="#hero" class="nav__logo">KHS</a>
-
-      <!-- 메뉴 목록 (모바일에서 슬라이드다운) -->
       <ul class="nav__menu" id="nav-menu">
-        <li><a href="#about"    class="nav__link">About</a></li>
-        <li><a href="#skills"   class="nav__link">Skills</a></li>
+        <li><a href="#about" class="nav__link">About</a></li>
+        <li><a href="#journey" class="nav__link">Journey</a></li>
+        <li><a href="#skills" class="nav__link">Skills</a></li>
         <li><a href="#projects" class="nav__link">Projects</a></li>
-        <li><a href="#contact"  class="nav__link">Contact</a></li>
+        <li><a href="#contact" class="nav__link">Contact</a></li>
       </ul>
 
       <div class="nav__actions">
-        <!-- 다크 모드 토글 버튼 -->
-        <button class="dark-toggle" id="dark-toggle" aria-label="다크 모드 전환">
-          <i class="fas fa-moon"></i>
+        <button class="dark-toggle" id="dark-toggle" type="button" aria-label="다크 모드 전환" aria-pressed="false">
+          <i class="fas fa-moon" aria-hidden="true"></i>
         </button>
 
-        <!-- 햄버거 버튼 (모바일에서만 표시) -->
-        <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+        <button class="hamburger" id="hamburger" type="button" aria-label="메뉴 열기" aria-controls="nav-menu" aria-expanded="false">
           <span></span>
           <span></span>
           <span></span>
@@ -50,33 +49,40 @@
   </header>
 
   <main>
-
     <!-- ===== HERO: 메인 인트로 섹션 ===== -->
     <section class="hero" id="hero">
-      <div class="hero__content container">
+      <div class="hero__content container animate-on-scroll">
+        <p class="hero__eyebrow">Computer Science Student</p>
         <p class="hero__greeting">안녕하세요, 저는</p>
         <h1 class="hero__name">김현서</h1>
-        <p class="hero__role">컴퓨터공학과 학생</p>
-        <p class="hero__description">섬세함과 꼼꼼함으로 보다 나은 서비스를 만들어갑니다.</p>
+        <p class="hero__role">관찰하고, 추론하고, 더 나은 방향을 만드는 사람</p>
+        <p class="hero__description">
+          섬세하게 관찰하고, 깊이 추론하며, 기술로 더 나은 방향을 만들어가고 싶은 컴퓨터공학도입니다.
+        </p>
+
+        <div class="hero__keywords" aria-label="핵심 키워드">
+          <span>Observation</span>
+          <span>Reasoning</span>
+          <span>Software</span>
+        </div>
+
         <div class="hero__buttons">
           <a href="#projects" class="btn btn--primary">프로젝트 보기</a>
-          <a href="#contact"  class="btn btn--secondary">연락하기</a>
+          <a href="#journey" class="btn btn--secondary">성장 여정 보기</a>
         </div>
       </div>
 
-      <!-- 배경 장식 원형 요소 -->
-      <div class="hero__bg-circle hero__bg-circle--1"></div>
-      <div class="hero__bg-circle hero__bg-circle--2"></div>
+      <div class="hero__bg-circle hero__bg-circle--1" aria-hidden="true"></div>
+      <div class="hero__bg-circle hero__bg-circle--2" aria-hidden="true"></div>
     </section>
 
     <!-- ===== ABOUT: 자기소개 섹션 ===== -->
     <section class="about section" id="about">
       <div class="container">
         <h2 class="section__title animate-on-scroll">About Me</h2>
+        <p class="section__subtitle animate-on-scroll">기술을 배우는 이유와 문제를 바라보는 태도</p>
 
         <div class="about__content">
-
-          <!-- 프로필 이미지 (images/profile.png 파일로 교체) -->
           <div class="about__image animate-on-scroll">
             <img
               src="images/profile.png"
@@ -84,25 +90,96 @@
               class="about__photo"
               id="profile-img"
             />
-            <!-- 이미지 로드 실패 시 폴백 플레이스홀더 (JS에서 토글) -->
-            <div class="about__photo-placeholder hidden" id="profile-placeholder">
+            <div class="about__photo-placeholder hidden" id="profile-placeholder" aria-hidden="true">
               <i class="fas fa-user"></i>
             </div>
           </div>
 
-          <!-- 자기소개 텍스트 및 연락처 -->
           <div class="about__text animate-on-scroll">
-            <p>섬세함과 꼼꼼함으로 보다 나은 서비스를 개발하고자 하는 컴퓨터공학과 김현서라고 합니다.</p>
-            <p>코디세이 올인원 0기·1기를 수료하고 있으며, 멋쟁이사자처럼 동아리의 교내 대표를 맡고 있습니다.</p>
-            <p>앞으로 사이트에서 더 많은 걸 보여드릴 수 있도록 열심히 스펙을 쌓아가겠습니다.</p>
+            <p>
+              저는 컴퓨터공학을 공부하며 프로그래밍, 웹 개발, CS, 클라우드, 인프라, 인공지능 등 다양한 기술의 기반을 넓혀가고 있습니다.
+            </p>
+            <p>
+              아직 하나의 분야로 저를 단정하기보다는, 기술이 사람과 세상에 어떻게 닿을 수 있는지를 고민하며 배우고 있습니다. 복잡한 문제를 빠르게 넘기기보다 천천히 들여다보고, 그 안의 흐름과 이유를 찾아내는 과정을 좋아합니다.
+            </p>
+            <p>
+              저의 강점은 섬세하게 관찰하고, 맥락을 읽고, 문제를 구조화하려는 태도입니다. 앞으로는 이러한 태도를 바탕으로 신뢰할 수 있는 소프트웨어를 만들고, 작더라도 분명한 이로움을 만들어내는 개발자로 성장하고자 합니다.
+            </p>
 
-            <!-- 연락처 정보 목록 -->
-            <ul class="about__info">
-              <li><i class="fas fa-envelope"></i> tangled0125@gmail.com</li>
-              <li><i class="fab fa-discord"></i> whoareyou911</li>
-              <li><i class="fab fa-github"></i> RIIZE0904</li>
+            <div class="about__cards" aria-label="강점 요약">
+              <article class="about-card">
+                <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                <h3>관찰</h3>
+                <p>문제를 바로 판단하기보다 맥락과 흐름을 먼저 살핍니다.</p>
+              </article>
+              <article class="about-card">
+                <i class="fas fa-brain" aria-hidden="true"></i>
+                <h3>추론</h3>
+                <p>왜 그런 결과가 나왔는지 원인과 구조를 찾으려 합니다.</p>
+              </article>
+              <article class="about-card">
+                <i class="fas fa-code" aria-hidden="true"></i>
+                <h3>구현</h3>
+                <p>작더라도 실제로 동작하는 결과물로 생각을 검증합니다.</p>
+              </article>
+            </div>
+
+            <ul class="about__info" aria-label="연락처 정보">
+              <li><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:tangled0125@gmail.com">tangled0125@gmail.com</a></li>
+              <li><i class="fab fa-discord" aria-hidden="true"></i> whoareyou911</li>
+              <li><i class="fab fa-github" aria-hidden="true"></i> <a href="https://github.com/RIIZE0904" target="_blank" rel="noopener">RIIZE0904</a></li>
             </ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== JOURNEY: 성장 과정 섹션 ===== -->
+    <section class="journey section" id="journey">
+      <div class="container">
+        <h2 class="section__title animate-on-scroll">Journey</h2>
+        <p class="section__subtitle animate-on-scroll">지금까지의 학습과 활동 흐름입니다.</p>
+
+        <div class="journey__timeline">
+          <article class="journey-item animate-on-scroll">
+            <div class="journey-item__date">2024</div>
+            <div class="journey-item__content">
+              <h3>컴퓨터공학과 입학</h3>
+              <p>프로그래밍과 컴퓨터공학의 기초를 쌓기 시작했습니다.</p>
+            </div>
+          </article>
+
+          <article class="journey-item animate-on-scroll">
+            <div class="journey-item__date">2025.07 ~ 2025.12</div>
+            <div class="journey-item__content">
+              <h3>Codyssey 0기 활동</h3>
+              <p>기초 개발 역량과 협업 경험을 넓히며 프로젝트 기반 학습을 진행했습니다.</p>
+            </div>
+          </article>
+
+          <article class="journey-item animate-on-scroll">
+            <div class="journey-item__date">2026.01</div>
+            <div class="journey-item__content">
+              <h3>교내 대회 입상</h3>
+              <p>학습한 내용을 결과물로 연결하고, 문제 해결 과정을 검증받았습니다.</p>
+            </div>
+          </article>
+
+          <article class="journey-item animate-on-scroll">
+            <div class="journey-item__date">2026.03 ~ 2026.12</div>
+            <div class="journey-item__content">
+              <h3>멋쟁이사자처럼 교내 대표</h3>
+              <p>운영과 소통, 기획 경험을 통해 팀 안에서 기술과 사람을 연결하는 법을 배우고 있습니다.</p>
+            </div>
+          </article>
+
+          <article class="journey-item animate-on-scroll">
+            <div class="journey-item__date">2026.04 ~ 현재</div>
+            <div class="journey-item__content">
+              <h3>Codyssey 1기 활동 중</h3>
+              <p>웹, CS, 클라우드, 인프라, AI 등 다양한 기술 기반을 확장하고 있습니다.</p>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -111,40 +188,49 @@
     <section class="skills section" id="skills">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Skills</h2>
-        <p class="section__subtitle animate-on-scroll">사용할 수 있는 기술 스택입니다.</p>
+        <p class="section__subtitle animate-on-scroll">현재 학습하고 활용 중인 기술 기반입니다.</p>
 
-        <!-- Grid 레이아웃: 카드 수에 따라 자동 줄바꿈 -->
         <div class="skills__grid">
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-html5 skill-card__icon"></i>
+          <article class="skill-card animate-on-scroll">
+            <i class="fab fa-html5 skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">HTML5</h3>
             <p class="skill-card__desc">시맨틱 마크업, 웹 접근성</p>
-          </div>
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-css3-alt skill-card__icon"></i>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fab fa-css3-alt skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">CSS3</h3>
             <p class="skill-card__desc">Flexbox, Grid, 반응형 디자인</p>
-          </div>
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-js skill-card__icon"></i>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fab fa-js skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">JavaScript</h3>
             <p class="skill-card__desc">ES6+, DOM 조작, 비동기 처리</p>
-          </div>
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-python skill-card__icon"></i>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fab fa-python skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">Python</h3>
-            <p class="skill-card__desc">데이터 처리, 알고리즘</p>
-          </div>
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-react skill-card__icon"></i>
-            <h3 class="skill-card__name">React</h3>
-            <p class="skill-card__desc">컴포넌트, 상태 관리</p>
-          </div>
-          <div class="skill-card animate-on-scroll">
-            <i class="fab fa-git-alt skill-card__icon"></i>
+            <p class="skill-card__desc">알고리즘, 데이터 처리</p>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fas fa-server skill-card__icon" aria-hidden="true"></i>
+            <h3 class="skill-card__name">CS / Infra</h3>
+            <p class="skill-card__desc">운영체제, 네트워크, 서버 기초</p>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fas fa-cloud skill-card__icon" aria-hidden="true"></i>
+            <h3 class="skill-card__name">Cloud</h3>
+            <p class="skill-card__desc">클라우드와 배포 환경 이해</p>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fas fa-robot skill-card__icon" aria-hidden="true"></i>
+            <h3 class="skill-card__name">AI</h3>
+            <p class="skill-card__desc">머신러닝과 인공지능 기초</p>
+          </article>
+          <article class="skill-card animate-on-scroll">
+            <i class="fab fa-git-alt skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">Git</h3>
-            <p class="skill-card__desc">버전 관리, 협업</p>
-          </div>
+            <p class="skill-card__desc">버전 관리, 협업 흐름</p>
+          </article>
         </div>
       </div>
     </section>
@@ -155,30 +241,24 @@
         <h2 class="section__title animate-on-scroll">Projects</h2>
         <p class="section__subtitle animate-on-scroll">GitHub 저장소를 실시간으로 불러옵니다.</p>
 
-        <!-- 로딩 / 에러 / 빈 상태 UI (JS에서 상태에 따라 표시/숨김) -->
-        <div class="projects__status">
-
-          <!-- 로딩 상태: 스피너 + 텍스트 -->
+        <div class="projects__status" aria-live="polite">
           <div class="status status--loading" id="status-loading">
-            <div class="spinner"></div>
+            <div class="spinner" aria-hidden="true"></div>
             <p>프로젝트를 불러오는 중...</p>
           </div>
 
-          <!-- 에러 상태: 메시지 + 재시도 버튼 -->
           <div class="status status--error hidden" id="status-error">
-            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
             <p>프로젝트를 불러올 수 없습니다.</p>
-            <button class="btn btn--primary" id="retry-btn">다시 시도</button>
+            <button class="btn btn--primary" id="retry-btn" type="button">다시 시도</button>
           </div>
 
-          <!-- 빈 상태: 저장소가 없을 때 -->
           <div class="status status--empty hidden" id="status-empty">
-            <i class="fas fa-folder-open"></i>
+            <i class="fas fa-folder-open" aria-hidden="true"></i>
             <p>표시할 프로젝트가 없습니다.</p>
           </div>
         </div>
 
-        <!-- 성공 상태: 프로젝트 카드 목록 (JS로 동적 렌더링) -->
         <div class="projects__grid hidden" id="projects-grid"></div>
       </div>
     </section>
@@ -187,26 +267,21 @@
     <section class="contact section" id="contact">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Contact</h2>
-        <p class="section__subtitle animate-on-scroll">궁금하신 점이 있으면 언제든지 연락해주세요.</p>
+        <p class="section__subtitle animate-on-scroll">함께 이야기하고 싶은 내용이 있다면 편하게 남겨주세요.</p>
 
-        <!-- novalidate: 브라우저 기본 검증 비활성화 → JS로 직접 처리 -->
         <form class="contact__form animate-on-scroll" id="contact-form" novalidate>
-
-          <!-- 이름 입력 필드 -->
           <div class="form-group">
             <label for="name">이름 <span class="required">*</span></label>
-            <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" />
+            <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" autocomplete="name" />
             <span class="form-error" id="name-error"></span>
           </div>
 
-          <!-- 이메일 입력 필드 -->
           <div class="form-group">
             <label for="email">이메일 <span class="required">*</span></label>
-            <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" />
+            <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" autocomplete="email" />
             <span class="form-error" id="email-error"></span>
           </div>
 
-          <!-- 메시지 입력 필드 -->
           <div class="form-group">
             <label for="message">메시지 <span class="required">*</span></label>
             <textarea id="message" name="message" rows="5" placeholder="메시지를 입력해주세요"></textarea>
@@ -215,15 +290,13 @@
 
           <button type="submit" class="btn btn--primary btn--full">보내기</button>
 
-          <!-- 성공 메시지 (제출 후 표시) -->
           <div class="form-success hidden" id="form-success">
-            <i class="fas fa-check-circle"></i>
-            <p>메시지가 성공적으로 전송되었습니다! 감사합니다.</p>
+            <i class="fas fa-check-circle" aria-hidden="true"></i>
+            <p>메시지가 성공적으로 확인되었습니다. 감사합니다.</p>
           </div>
         </form>
       </div>
     </section>
-
   </main>
 
   <!-- ===== FOOTER: 저작권 및 외부 링크 ===== -->
@@ -232,21 +305,17 @@
       <p>&copy; 2026 김현서. All rights reserved.</p>
       <div class="footer__links">
         <a href="https://github.com/RIIZE0904" target="_blank" rel="noopener" aria-label="GitHub">
-          <i class="fab fa-github"></i>
+          <i class="fab fa-github" aria-hidden="true"></i>
         </a>
         <a href="mailto:tangled0125@gmail.com" aria-label="이메일">
-          <i class="fas fa-envelope"></i>
+          <i class="fas fa-envelope" aria-hidden="true"></i>
         </a>
       </div>
     </div>
   </footer>
 
-  <!-- 스크롤 탑 버튼 (300px 이상 스크롤 시 표시) -->
-  <button class="scroll-top hidden" id="scroll-top" aria-label="맨 위로 이동">
-    <i class="fas fa-arrow-up"></i>
+  <button class="scroll-top hidden" id="scroll-top" type="button" aria-label="맨 위로 이동">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
   </button>
-
-  <!-- JavaScript 파일 연결 (body 끝에 위치 → DOM 로드 후 실행) -->
-  <script src="js/main.js"></script>
 </body>
 </html>
