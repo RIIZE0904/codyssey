@@ -47,9 +47,7 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 | 구분 | 링크 |
 |---|---|
 | GitHub Repository | https://github.com/RIIZE0904/codyssey |
-| GitHub Pages URL | `배포 후 추가 예정` |
-
-> GitHub Pages 배포 완료 후 위 URL을 업데이트합니다.
+| GitHub Pages URL | https://riize0904.github.io/codyssey/ |
 
 ---
 
