@@ -430,12 +430,10 @@ button {
   justify-content: center;
 }
 
-/* 프로필 이미지: 투명 배경 PNG에 맞게 원형 클립 없이 자연스럽게 표시 */
+/* 프로필 이미지: 원형 클립 없이 PNG 원본 그대로 표시 */
 .about__photo {
   width: 220px;
   height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
 }
 
 /* 이미지 로드 실패 시 표시되는 플레이스홀더는 원형 유지 */
@@ -445,8 +443,6 @@ button {
   border: 3px solid var(--color-primary);
   border-radius: 50%;
   box-shadow: var(--shadow-lg);
-
-.about__photo-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
