@@ -422,7 +422,7 @@ button {
 .about__content {
   display: grid;
   gap: 2rem;
-  align-items: center;
+  align-items: start; /* 이미지와 텍스트를 상단 기준으로 정렬 */
 }
 
 .about__image {
