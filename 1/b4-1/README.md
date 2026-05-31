@@ -497,7 +497,7 @@ GitHub Pages를 이용해 배포합니다.
 
 | Desktop | Mobile | Dark Mode |
 |---|---|---|
-| `추후 추가` | `추후 추가` | `추후 추가` |
+| ![Desktop](images/스크린샷%202026-05-31%20132632.png) | ![Mobile](images/KakaoTalk_20260531_132553345.jpg) | ![Dark Mode](images/스크린샷%202026-05-31%20135200.png) |
 
 ---
 
