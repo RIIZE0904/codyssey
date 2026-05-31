@@ -1,20 +1,16 @@
-/* ============================================================
-   style.css — 반응형 포트폴리오 스타일
-   설계 기준: 모바일 퍼스트 → 768px → 1024px 확장
-   ============================================================ */
-
-/* ===== CSS 변수: 라이트 테마 토큰 ===== */
+/* 색상·폰트·크기 값은 여기서 변수로 한 번에 관리
+   나중에 색 바꾸고 싶으면 여기 한 곳만 수정하면 됨 */
 :root {
-  --color-bg: #f8f9fa;
-  --color-bg-alt: #ffffff;
-  --color-text: #212529;
-  --color-text-light: #6c757d;
-  --color-primary: #4361ee;
+  --color-bg: #f8f9fa;            /* 라이트 모드 배경 */
+  --color-bg-alt: #ffffff;        /* 섹션 교차 배경 (about, projects, footer) */
+  --color-text: #212529;          /* 본문 글자 */
+  --color-text-light: #6c757d;    /* 설명·부가 정보 등 연한 글자 */
+  --color-primary: #4361ee;       /* 포인트 색 */
   --color-primary-dark: #3147c9;
-  --color-secondary: #f72585;
+  --color-secondary: #f72585;     /* 에러·강조 색 */
   --color-border: #dee2e6;
   --color-card-bg: #ffffff;
-  --color-nav-bg: rgba(248, 249, 250, 0.9);
+  --color-nav-bg: rgba(248, 249, 250, 0.9);      /* 반투명 네비 배경 */
   --color-nav-scrolled: rgba(255, 255, 255, 0.98);
   --color-success-bg: #d4edda;
   --color-success-text: #155724;
@@ -29,7 +25,8 @@
   --font-en: 'Poppins', sans-serif;
 }
 
-/* 과제 명세에 맞춘 다크 모드 변수: [data-theme="dark"] */
+/* html 요소에 data-theme="dark"가 붙으면 아래 변수가 위 :root 값을 덮어씀
+   JS에서 root.setAttribute('data-theme', 'dark') 하면 여기가 발동됨 */
 [data-theme="dark"] {
   --color-bg: #0f172a;
   --color-bg-alt: #1e293b;
@@ -46,7 +43,7 @@
   --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.35);
 }
 
-/* ===== 리셋 & 기본 설정 ===== */
+/* padding·margin 기본값이 브라우저마다 달라서 전부 초기화 */
 *,
 *::before,
 *::after {
@@ -56,32 +53,33 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-behavior: smooth;      /* 앵커 링크 클릭 시 부드럽게 스크롤 */
+  scroll-padding-top: 80px;     /* 고정 헤더 높이만큼 여백 - 없으면 제목이 헤더에 가려짐 */
 }
 
 body {
   font-family: var(--font-main);
   background-color: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.75;
-  transition: background-color var(--transition), color var(--transition);
+  line-height: 1.75;   /* 한국어는 줄 간격을 넉넉하게 잡는 게 읽기 편함 */
+  transition: background-color var(--transition), color var(--transition);  /* 다크모드 전환 시 색 변화를 부드럽게 */
 }
 
 img {
-  display: block;
-  max-width: 100%;
+  display: block;     /* 이미지 아래에 생기는 여백(인라인 기본값) 제거 */
+  max-width: 100%;    /* 부모 너비를 넘지 않도록 */
 }
 
 a {
-  color: inherit;
+  color: inherit;         /* 부모 글자색 그대로 사용 */
   text-decoration: none;
 }
 
 ul {
-  list-style: none;
+  list-style: none;   /* 기본 점 제거 */
 }
 
+/* 폼 요소는 기본적으로 부모 폰트를 이어받지 않아서 직접 지정 */
 button,
 input,
 textarea {
@@ -94,16 +92,18 @@ button {
   cursor: pointer;
 }
 
-/* ===== 공통 레이아웃 ===== */
+/* 콘텐츠 너비를 1100px로 제한하고 가운데 정렬
+   min(): 두 값 중 더 작은 값 → 모바일에서는 100% - 2rem이 더 작아서 자동으로 좌우 여백이 생김 */
 .container {
   width: min(100% - 2rem, 1100px);
   margin: 0 auto;
 }
 
 .section {
-  padding: 4.5rem 0;
+  padding: 4.5rem 0;   /* 섹션 위아래 여백 */
 }
 
+/* clamp(최솟값, 기본값, 최댓값): 화면 크기에 따라 자동으로 조정 */
 .section__title {
   font-family: var(--font-en);
   font-size: clamp(1.8rem, 5vw, 2.4rem);
@@ -112,6 +112,7 @@ button {
   margin-bottom: 0.5rem;
 }
 
+/* 제목 아래 파란 밑줄 장식 - HTML 수정 없이 CSS 가상 요소로 추가 */
 .section__title::after {
   content: '';
   display: block;
@@ -129,18 +130,19 @@ button {
   text-align: center;
 }
 
-/* ===== HEADER & NAV ===== */
+/* 스크롤해도 항상 상단에 보이도록 fixed 고정 */
 .header {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 1000;       /* 다른 요소 위에 쌓이도록 */
   width: 100%;
   background-color: var(--color-nav-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);   /* 배경을 흐리게 - 반투명 유리 효과 */
   transition: background-color var(--transition), box-shadow var(--transition);
 }
 
+/* JS에서 스크롤 60px 넘으면 이 클래스를 붙임 - 그림자가 추가되어 구분감이 생김 */
 .header.scrolled {
   background-color: var(--color-nav-scrolled);
   box-shadow: var(--shadow-sm);
@@ -149,7 +151,7 @@ button {
 .nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between;   /* 로고·메뉴·버튼을 양쪽으로 배치 */
   min-height: 64px;
 }
 
@@ -161,9 +163,11 @@ button {
   letter-spacing: 3px;
 }
 
+/* 모바일: 화면 위로 밀어서 숨김 (translateY로 위로 올림)
+   active 클래스 붙으면 translateY(0)으로 내려와서 나타남 */
 .nav__menu {
   position: fixed;
-  top: 64px;
+  top: 64px;        /* 헤더 바로 아래 */
   left: 0;
   width: 100%;
   display: flex;
@@ -173,12 +177,13 @@ button {
   padding: 1.5rem 0;
   background-color: var(--color-nav-scrolled);
   box-shadow: var(--shadow-sm);
-  transform: translateY(-150%);
+  transform: translateY(-150%);    /* 기본 상태: 화면 위로 숨김 */
   transition: transform var(--transition);
 }
 
+/* JS가 햄버거 클릭 시 이 클래스를 붙여줌 */
 .nav__menu.active {
-  transform: translateY(0);
+  transform: translateY(0);   /* 제자리로 내려옴 */
 }
 
 .nav__link {
@@ -187,6 +192,7 @@ button {
   transition: color var(--transition);
 }
 
+/* 호버 시 나타나는 밑줄 - 처음엔 width:0, 호버하면 width:100%로 늘어남 */
 .nav__link::after {
   content: '';
   position: absolute;
@@ -227,10 +233,12 @@ button {
   transition: transform var(--transition), background-color var(--transition);
 }
 
+/* 호버 시 살짝 회전 - 달·해 아이콘이라 어울리는 효과 */
 .dark-toggle:hover {
   transform: rotate(20deg);
 }
 
+/* span 3개를 세로로 쌓아서 햄버거 모양 */
 .hamburger {
   width: 30px;
   display: flex;
@@ -248,6 +256,7 @@ button {
   transition: transform var(--transition), opacity var(--transition);
 }
 
+/* active 상태: 위·아래 선은 X 모양으로 회전, 가운데 선은 숨김 */
 .hamburger.active span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -260,30 +269,33 @@ button {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ===== HERO ===== */
+/* 화면 전체 높이를 차지하는 히어로 섹션
+   overflow:hidden 은 배경 원형이 화면 밖으로 삐져나오지 않도록 */
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 64px;
+  padding-top: 64px;   /* 고정 헤더 높이만큼 위 여백 확보 */
   overflow: hidden;
 }
 
+/* 배경 원형보다 앞에 나와야 해서 z-index 설정 */
 .hero__content {
   position: relative;
   z-index: 1;
   text-align: center;
 }
 
+/* 이름 위에 뜨는 작은 pill 형태 뱃지 */
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.35rem 0.9rem;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: 999px;   /* 완전한 pill 모양 */
   margin-bottom: 1rem;
   color: var(--color-primary);
   background-color: var(--color-card-bg);
@@ -300,6 +312,7 @@ button {
   font-size: 1.05rem;
 }
 
+/* 이름 크기는 화면 너비에 따라 유동적으로 변함 */
 .hero__name {
   margin-bottom: 0.45rem;
   color: var(--color-primary);
@@ -315,6 +328,7 @@ button {
   font-weight: 600;
 }
 
+/* word-break:keep-all 은 한국어 단어를 함부로 자르지 않음 */
 .hero__description {
   max-width: 680px;
   margin: 0 auto 1.5rem;
@@ -323,6 +337,7 @@ button {
   word-break: keep-all;
 }
 
+/* 키워드 뱃지 목록 - 줄바꿈 허용 */
 .hero__keywords {
   display: flex;
   flex-wrap: wrap;
@@ -342,6 +357,7 @@ button {
   box-shadow: var(--shadow-sm);
 }
 
+/* 모바일에서는 버튼 세로 배치, 태블릿 이상에서 가로 배치로 전환 */
 .hero__buttons {
   display: flex;
   flex-direction: column;
@@ -349,11 +365,12 @@ button {
   gap: 0.9rem;
 }
 
+/* 배경 장식 원형 - 그라데이션에 투명도 낮게 */
 .hero__bg-circle {
   position: absolute;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  opacity: 0.08;
+  opacity: 0.08;   /* 너무 진하면 글자 읽기 방해됨 */
 }
 
 .hero__bg-circle--1 {
@@ -370,7 +387,7 @@ button {
   left: -120px;
 }
 
-/* ===== BUTTON ===== */
+/* 공통 버튼 스타일 - primary·secondary 두 종류가 이 기본값을 공유 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -385,6 +402,7 @@ button {
   transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition), color var(--transition), border-color var(--transition);
 }
 
+/* 채워진 버튼 */
 .btn--primary {
   color: #ffffff;
   background-color: var(--color-primary);
@@ -392,10 +410,11 @@ button {
 
 .btn--primary:hover,
 .btn--primary:focus-visible {
-  transform: translateY(-2px);
+  transform: translateY(-2px);   /* 살짝 위로 뜨는 효과 */
   box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
 }
 
+/* 테두리만 있는 버튼 */
 .btn--secondary {
   color: var(--color-primary);
   background-color: transparent;
@@ -409,21 +428,23 @@ button {
   transform: translateY(-2px);
 }
 
+/* 전체 너비를 차지하는 버튼 - 폼 제출 버튼 등에 사용 */
 .btn--full {
   width: 100%;
 }
 
-/* ===== ABOUT ===== */
+/* about·projects·footer는 배경색을 alt로 해서 시각적 섹션 구분 */
 .about,
 .projects,
 .footer {
   background-color: var(--color-bg-alt);
 }
 
+/* 기본은 1열 그리드, 태블릿 이상에서 2열(이미지+텍스트)로 전환 */
 .about__content {
   display: grid;
   gap: 2rem;
-  align-items: start; /* 이미지와 텍스트를 상단 기준으로 정렬 */
+  align-items: start;   /* 이미지와 텍스트를 위쪽 기준으로 정렬 */
 }
 
 .about__image {
@@ -431,13 +452,13 @@ button {
   justify-content: center;
 }
 
-/* 프로필 이미지: 원형 클립 없이 PNG 원본 그대로 표시 */
+/* 이미지는 원형 없이 그대로 표시 - 배경 제거된 PNG라 자연스럽게 보임 */
 .about__photo {
   width: 220px;
   height: auto;
 }
 
-/* 이미지 로드 실패 시 표시되는 플레이스홀더는 원형 유지 */
+/* 이미지 로드 실패 시에만 보이는 원형 플레이스홀더 */
 .about__photo-placeholder {
   width: 190px;
   height: 190px;
@@ -456,6 +477,7 @@ button {
   margin-bottom: 1rem;
 }
 
+/* 강점 카드 3개 - 기본 1열, 태블릿에서 3열로 */
 .about__cards {
   display: grid;
   grid-template-columns: 1fr;
@@ -472,6 +494,7 @@ button {
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
+/* 호버 시 살짝 위로 뜨는 효과 */
 .about-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
@@ -508,13 +531,14 @@ button {
   font-size: 0.92rem;
 }
 
+/* 아이콘 너비 고정 - 아이콘마다 크기가 달라서 텍스트 시작 위치가 들쑥날쑥해지는 걸 막음 */
 .about__info i {
   width: 18px;
   color: var(--color-primary);
   text-align: center;
 }
 
-/* ===== JOURNEY ===== */
+/* 타임라인 전체 컨테이너 - 세로 선은 ::before로 그림 */
 .journey__timeline {
   position: relative;
   display: grid;
@@ -523,6 +547,7 @@ button {
   margin: 0 auto;
 }
 
+/* 타임라인 세로 연결선 */
 .journey__timeline::before {
   content: '';
   position: absolute;
@@ -538,9 +563,10 @@ button {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.6rem;
-  padding-left: 2.4rem;
+  padding-left: 2.4rem;   /* 왼쪽 선·점 자리 확보 */
 }
 
+/* 타임라인 점 - 작은 원형 */
 .journey-item::before {
   content: '';
   position: absolute;
@@ -550,7 +576,7 @@ button {
   height: 0.8rem;
   border: 3px solid var(--color-primary);
   border-radius: 50%;
-  background-color: var(--color-bg);
+  background-color: var(--color-bg);   /* 안을 배경색으로 채워서 세로 선이 비쳐 보이지 않음 */
 }
 
 .journey-item__date {
@@ -584,7 +610,7 @@ button {
   font-size: 0.92rem;
 }
 
-/* ===== SKILLS ===== */
+/* 기술 카드 - 모바일 2열, 태블릿 이상에서 auto-fit으로 자동 조정 */
 .skills__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -607,7 +633,7 @@ button {
 }
 
 .skill-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-6px);   /* about-card보다 조금 더 높이 뜨게 */
   box-shadow: var(--shadow-md);
 }
 
@@ -628,7 +654,7 @@ button {
   font-size: 0.8rem;
 }
 
-/* ===== PROJECTS ===== */
+/* 로딩·에러·빈 상태 메시지를 가운데 정렬 */
 .projects__status {
   display: flex;
   justify-content: center;
@@ -649,10 +675,13 @@ button {
   font-size: 3rem;
 }
 
+/* 에러 아이콘만 빨간색 */
 .status--error i {
   color: var(--color-secondary);
 }
 
+/* 빙글빙글 도는 로딩 원형 - CSS 애니메이션만으로 구현
+   border-top-color만 다른 색으로 해서 한 쪽이 두드러져 보이는 원리 */
 .spinner {
   width: 48px;
   height: 48px;
@@ -668,6 +697,7 @@ button {
   }
 }
 
+/* auto-fit: 카드 개수에 따라 열 수가 자동으로 조정됨 */
 .projects__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -702,12 +732,14 @@ button {
   color: var(--color-primary);
 }
 
+/* overflow-wrap:anywhere 로 긴 저장소 이름도 카드 밖으로 삐져나오지 않게 */
 .project-card__name {
   overflow-wrap: anywhere;
   font-size: 1rem;
   font-weight: 700;
 }
 
+/* flex-grow:1 로 설명 텍스트가 카드 높이를 채움 → GitHub 링크가 항상 카드 맨 아래에 붙음 */
 .project-card__desc {
   flex-grow: 1;
   color: var(--color-text-light);
@@ -729,6 +761,7 @@ button {
   gap: 0.3rem;
 }
 
+/* 프로그래밍 언어 색 표시 점 */
 .lang-dot {
   display: inline-block;
   width: 10px;
@@ -737,11 +770,12 @@ button {
   background-color: var(--color-primary);
 }
 
+/* 호버 시 화살표와 텍스트 사이 간격이 벌어지는 효과 */
 .project-card__link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: auto;
+  margin-top: auto;    /* 카드 맨 아래로 밀기 */
   color: var(--color-primary);
   font-size: 0.88rem;
   font-weight: 700;
@@ -752,7 +786,6 @@ button {
   gap: 0.7rem;
 }
 
-/* ===== CONTACT ===== */
 .contact__form {
   display: flex;
   flex-direction: column;
@@ -772,6 +805,7 @@ button {
   font-weight: 600;
 }
 
+/* 필수 항목 별표 - 빨간색 */
 .required {
   color: var(--color-secondary);
 }
@@ -784,27 +818,31 @@ button {
   border-radius: var(--radius-sm);
   color: var(--color-text);
   background-color: var(--color-bg);
-  resize: vertical;
+  resize: vertical;    /* 세로 방향만 크기 조절 허용 */
   transition: border-color var(--transition), background-color var(--transition);
 }
 
+/* 포커스 시 테두리 파란색 - 지금 어디 입력 중인지 표시 */
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: var(--color-primary);
   outline: none;
 }
 
+/* JS에서 검사 실패한 필드에 이 클래스를 붙임 */
 .form-group input.error,
 .form-group textarea.error {
   border-color: #e74c3c;
 }
 
+/* min-height로 공간 확보 - 에러 메시지가 없을 때도 레이아웃이 흔들리지 않음 */
 .form-error {
   min-height: 1rem;
   color: #e74c3c;
   font-size: 0.8rem;
 }
 
+/* 폼 제출 성공 시 3초 동안 보이는 메시지 박스 */
 .form-success {
   display: flex;
   align-items: center;
@@ -816,7 +854,6 @@ button {
   font-weight: 600;
 }
 
-/* ===== FOOTER ===== */
 .footer {
   border-top: 1px solid var(--color-border);
   padding: 2rem 0;
@@ -851,7 +888,7 @@ button {
   transform: translateY(-3px);
 }
 
-/* ===== SCROLL TOP ===== */
+/* 스크롤 탑 버튼 - 화면 오른쪽 아래에 고정 */
 .scroll-top {
   position: fixed;
   right: 1.2rem;
@@ -873,11 +910,12 @@ button {
   transform: translateY(-4px);
 }
 
-/* ===== UTILITIES & ANIMATION ===== */
+/* !important: 다른 스타일보다 강제로 우선 적용해서 숨김 */
 .hidden {
   display: none !important;
 }
 
+/* 처음엔 투명하게 아래 위치, visible 클래스 붙으면 원래 자리로 올라오며 나타남 */
 .animate-on-scroll {
   opacity: 0;
   transform: translateY(30px);
@@ -889,20 +927,22 @@ button {
   transform: translateY(0);
 }
 
-/* ===== 768px 이상: 태블릿 ===== */
+/* 태블릿 이상 - 768px */
 @media (min-width: 768px) {
   .container {
-    width: min(100% - 3rem, 1100px);
+    width: min(100% - 3rem, 1100px);   /* 좌우 여백 조금 더 줌 */
   }
 
   .section {
-    padding: 6rem 0;
+    padding: 6rem 0;   /* 섹션 간격 더 넓게 */
   }
 
+  /* 태블릿부터 햄버거 메뉴 숨김 */
   .hamburger {
     display: none;
   }
 
+  /* 모바일에서 fixed로 숨겨뒀던 메뉴를 일반 흐름으로 복원 */
   .nav__menu {
     position: static;
     width: auto;
@@ -914,16 +954,19 @@ button {
     transform: none;
   }
 
+  /* 버튼 가로 배치 */
   .hero__buttons {
     flex-direction: row;
     justify-content: center;
   }
 
+  /* 이미지 + 텍스트 2열 레이아웃 */
   .about__content {
     grid-template-columns: 220px 1fr;
     gap: 3rem;
   }
 
+  /* 강점 카드 3열로 */
   .about__cards {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -933,6 +976,7 @@ button {
     gap: 1.25rem;
   }
 
+  /* 푸터 좌우 배치 */
   .footer .container {
     flex-direction: row;
     justify-content: space-between;
@@ -940,12 +984,13 @@ button {
   }
 }
 
-/* ===== 1024px 이상: 데스크톱 ===== */
+/* 데스크톱 - 1024px 이상 */
 @media (min-width: 1024px) {
   .nav__menu {
     gap: 2rem;
   }
 
+  /* 화면이 충분히 넓을 때 설명 글자 조금 키움 */
   .hero__description {
     font-size: 1.08rem;
   }
@@ -964,12 +1009,14 @@ button {
     height: 220px;
   }
 
+  /* 타임라인: 날짜와 내용을 좌우로 배치 */
   .journey-item {
     grid-template-columns: 180px 1fr;
     align-items: start;
     gap: 1.5rem;
   }
 
+  /* 날짜 오른쪽 정렬 - 내용과 깔끔하게 맞춤 */
   .journey-item__date {
     padding-top: 1.25rem;
     text-align: right;

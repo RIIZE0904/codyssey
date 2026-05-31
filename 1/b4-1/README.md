@@ -82,7 +82,7 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 
 | 파일 | 역할 |
 |---|---|
-| `index.html` | Header, Hero, About, Skills, Projects, Contact, Footer 구조 작성 |
+| `index.html` | Header, Hero, About, Journey, Skills, Projects, Contact, Footer 구조 작성 |
 | `css/style.css` | CSS 변수, 레이아웃, 반응형, 다크 모드, hover 효과, 애니메이션 작성 |
 | `js/main.js` | 사용자 이벤트 처리, 상태 변경, DOM 업데이트, API 호출, 폼 검증 처리 |
 | `images/profile.png` | About 섹션 프로필 이미지 |
@@ -110,7 +110,7 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 
 - [x] 시맨틱 태그 사용
   - `header`, `nav`, `main`, `section`, `article`, `footer`
-- [x] Hero, About, Skills, Projects, Contact, Footer 섹션 구성
+- [x] Hero, About, Journey, Skills, Projects, Contact, Footer 섹션 구성
 - [x] 네비게이션 내 각 섹션 이동 앵커 링크 구현
 - [x] 이미지에 의미 있는 `alt` 속성 작성
 - [x] 폼 요소에 `label` 연결
@@ -125,8 +125,8 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 - [x] 네비게이션에 Flexbox 사용
 - [x] Skills, Projects 카드에 Grid 사용
 - [x] 반응형 디자인 구현
-  - 768px 이하: 햄버거 메뉴, About 세로 배치, Projects 1열
-  - 480px 이하: Hero 버튼 세로 배치, Footer 중앙 정렬
+  - 768px 이하: 햄버거 메뉴, About 세로 배치, 카드 1~2열
+  - 1024px 이상: About 2열, Journey 날짜·내용 좌우 배치
 - [x] 버튼과 카드에 hover 효과 및 transition 적용
 - [x] 카드에 box-shadow 적용
 - [x] 스크롤 애니메이션 스타일 구현
@@ -162,6 +162,8 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 - [x] 입력 중 에러 메시지 초기화
 - [x] 유효성 검사 통과 시 성공 메시지 표시
 - [x] 성공 메시지 3초 후 자동 숨김
+
+> 실제 이메일 전송은 요구사항에 포함되지 않습니다. 폼 유효성 검사와 성공/에러 UI 표시가 과제 범위이며, 현재 구현이 이를 충족합니다.
 
 ### 6-5. API 연동 및 상태 관리
 
@@ -207,7 +209,7 @@ README 전체를 링크로 복잡하게 만들기보다, 평가자가 빠르게 
 | 햄버거 메뉴 | [8-2. 햄버거 메뉴](#8-2-햄버거-메뉴) |
 | 스크롤 이벤트 | [8-3. 스크롤 이벤트](#8-3-스크롤-이벤트) |
 | 스크롤 애니메이션 | [8-4. 스크롤 애니메이션](#8-4-스크롤-애니메이션) |
-| GitHub API 연동 | [8-5. github-api-연동](#8-5-github-api-연동) |
+| GitHub API 연동 | [8-5. GitHub API 연동](#8-5-github-api-연동) |
 | 폼 유효성 검사 | [8-6. 폼 유효성 검사](#8-6-폼-유효성-검사) |
 
 
@@ -341,10 +343,10 @@ fetchProjects() 실행
 
 | 상태 | 표시 내용 |
 |---|---|
-| loading | 스피너와 “프로젝트를 불러오는 중...” |
+| loading | 스피너와 "프로젝트를 불러오는 중..." |
 | success | 프로젝트 카드 리스트 |
-| error | “프로젝트를 불러올 수 없습니다.” + 다시 시도 버튼 |
-| empty | “표시할 프로젝트가 없습니다.” |
+| error | "프로젝트를 불러올 수 없습니다." + 다시 시도 버튼 |
+| empty | "표시할 프로젝트가 없습니다." |
 
 ### 배열 메서드 사용
 
@@ -354,6 +356,19 @@ fetchProjects() 실행
 | `map` | 저장소 데이터를 카드 HTML로 변환 |
 | `join` | 카드 HTML 배열을 하나의 문자열로 결합 |
 | `forEach` | 여러 요소에 이벤트 연결 |
+
+### XSS 방지
+
+외부 API에서 받은 데이터를 innerHTML에 삽입할 때는 `escapeHtml()` 함수로 특수문자를 이스케이프 처리했습니다.
+
+```js
+const escapeHtml = (value) => String(value)
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#039;');
+```
 
 ---
 
@@ -370,7 +385,7 @@ Contact 폼에서는 이름, 이메일, 메시지를 검사합니다.
 → 필수값 검사
 → 이메일 형식 검사
 → 오류가 있으면 에러 메시지 표시
-→ 오류가 없으면 성공 메시지 표시
+→ 오류가 없으면 성공 메시지 표시 후 3초 뒤 숨김
 ```
 
 ### 검증 항목
@@ -432,7 +447,7 @@ Contact 폼에서는 이름, 이메일, 메시지를 검사합니다.
 | `var` 대신 `const`, `let` 사용 | 준수 |
 | HTML 인라인 `onclick` 사용 금지 | 준수 |
 | 인라인 스타일 사용 금지 | 준수 |
-| 최신 Chrome 기준 정상 동작 | 확인 예정 |
+| 최신 Chrome 기준 정상 동작 | 확인 |
 | GitHub API 레이트 리밋 고려 | 에러 상태 UI 구현 |
 
 ---
@@ -459,7 +474,7 @@ GitHub Pages를 이용해 배포합니다.
 1. GitHub 저장소에 코드 push
 2. Repository Settings 이동
 3. Pages 메뉴 선택
-4. Source를 main branch / root로 설정
+4. Source를 gh-pages branch / root로 설정
 5. Save 클릭
 6. 배포 URL 접속 후 기능 확인
 ```
@@ -518,6 +533,7 @@ Projects 섹션은 GitHub API를 `fetch`와 `async/await`로 호출하고, loadi
 - `fetch`와 `async/await`를 활용한 비동기 API 호출
 - 로딩/성공/에러/빈 상태별 UI 분기 처리
 - 폼 유효성 검사와 사용자 피드백 제공
+- XSS 방지를 위한 HTML 이스케이프 처리
 - 이벤트 → 상태 변경 → DOM 업데이트 흐름
 
 ---
@@ -539,7 +555,7 @@ HTML은 구조를 담당하고, JavaScript는 동작을 담당하도록 나누�
 ### Q. GitHub API에서 에러 상태를 따로 만든 이유는 무엇인가요?
 
 API 요청은 네트워크 오류, GitHub API 레이트 리밋, 잘못된 응답 등으로 실패할 수 있습니다.  
-따라서 실패했을 때 아무것도 보이지 않게 두는 것이 아니라, 사용자에게 “프로젝트를 불러올 수 없습니다”라는 메시지와 재시도 버튼을 보여주도록 했습니다.
+따라서 실패했을 때 아무것도 보이지 않게 두는 것이 아니라, 사용자에게 "프로젝트를 불러올 수 없습니다"라는 메시지와 재시도 버튼을 보여주도록 했습니다.
 
 ### Q. Flexbox와 Grid는 각각 어디에 사용했나요?
 
@@ -550,6 +566,11 @@ Grid는 Skills와 Projects처럼 여러 카드를 행과 열로 배치해야 하
 
 폼은 기본적으로 제출 시 페이지가 새로고침되거나 서버로 이동하려고 합니다.  
 이 프로젝트에서는 JavaScript로 직접 유효성 검사를 하고 성공 메시지를 보여주는 것이 목적이므로, `event.preventDefault()`로 기본 제출 동작을 막았습니다.
+
+### Q. innerHTML에 외부 데이터를 넣을 때 주의할 점은 무엇인가요?
+
+GitHub API 응답에 악의적인 스크립트가 포함될 경우 XSS 공격으로 이어질 수 있습니다.  
+이를 방지하기 위해 `escapeHtml()` 함수로 `<`, `>`, `"` 같은 특수문자를 HTML 엔티티로 변환한 뒤 삽입했습니다.
 
 [맨 위로 이동](#웹-기초-완성-나만의-포트폴리오-구축)
 

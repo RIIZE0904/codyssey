@@ -1,31 +1,40 @@
 <!DOCTYPE html>
+<!-- data-theme 속성으로 라이트/다크 전환 - JS에서 이 값을 바꾸면 CSS 변수가 따라 바뀜 -->
 <html lang="ko" data-theme="light">
 <head>
   <meta charset="UTF-8" />
+  <!-- 모바일에서 화면이 축소되지 않도록 viewport 설정 필수 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 검색엔진이 미리보기로 보여주는 설명 텍스트 -->
   <meta name="description" content="컴퓨터공학도 김현서의 포트폴리오 웹사이트입니다." />
   <title>김현서 | Portfolio</title>
 
-  <!-- 웹 폰트: Noto Sans KR(한글), Poppins(영문) -->
+  <!-- 폰트 로딩 속도를 위해 preconnect로 미리 연결 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- 한글은 Noto Sans KR, 영문·숫자는 Poppins 사용 -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- 아이콘: Font Awesome은 과제에서 허용된 외부 리소스 -->
+  <!-- 아이콘 라이브러리 - 과제에서 허용된 외부 리소스 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- 외부 스타일시트 연결 -->
+  <!-- 스타일은 HTML에 섞지 않고 별도 파일로 분리 -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- JavaScript 파일 defer 연결: HTML 파싱 완료 후 실행 -->
+  <!-- defer: HTML 파싱이 끝난 뒤 JS 실행 - 없으면 DOM 요소를 못 찾고 에러 남 -->
   <script src="js/main.js" defer></script>
 </head>
 <body>
-  <!-- ===== HEADER: 고정 네비게이션 바 ===== -->
+
+  <!-- 스크롤해도 항상 상단에 고정되는 네비게이션 -->
   <header class="header" id="header">
+    <!-- container 클래스로 내용 너비를 제한해 가운데 정렬 -->
     <nav class="nav container" aria-label="주요 메뉴">
+
+      <!-- 로고 클릭 시 hero 섹션(맨 위)으로 이동 -->
       <a href="#hero" class="nav__logo" aria-label="홈으로 이동">Portfolio</a>
 
+      <!-- 모바일에서는 기본 숨김, 햄버거 클릭 시 active 클래스가 붙으면서 펼쳐짐 -->
       <ul class="nav__menu" id="nav-menu">
         <li><a href="#about" class="nav__link">About</a></li>
         <li><a href="#journey" class="nav__link">Journey</a></li>
@@ -35,11 +44,14 @@
       </ul>
 
       <div class="nav__actions">
+        <!-- aria-pressed: 스크린리더에게 버튼이 눌린 상태인지 알려줌, JS에서 값을 갱신함 -->
         <button class="dark-toggle" id="dark-toggle" type="button" aria-label="다크 모드 전환" aria-pressed="false">
           <i class="fas fa-moon" aria-hidden="true"></i>
         </button>
 
+        <!-- aria-expanded: 메뉴가 열렸는지 닫혔는지 접근성 속성으로 관리 -->
         <button class="hamburger" id="hamburger" type="button" aria-label="메뉴 열기" aria-controls="nav-menu" aria-expanded="false">
+          <!-- span 3개로 햄버거 모양, CSS로 active 시 X 형태로 애니메이션 -->
           <span></span>
           <span></span>
           <span></span>
@@ -49,8 +61,10 @@
   </header>
 
   <main>
-    <!-- ===== HERO: 메인 인트로 섹션 ===== -->
+
+    <!-- 첫 화면 인트로 섹션 -->
     <section class="hero" id="hero">
+      <!-- animate-on-scroll: JS의 IntersectionObserver가 화면에 들어오면 visible 클래스를 붙여줌 -->
       <div class="hero__content container animate-on-scroll">
         <p class="hero__eyebrow">Computer Science Student</p>
         <p class="hero__greeting">안녕하세요, 저는</p>
@@ -58,6 +72,7 @@
         <p class="hero__role">관찰하고, 추론하고, 더 나은 방향을 만드는 사람</p>
         <p class="hero__description">섬세하게 관찰하고, 깊이 추론하며, 기술로 더 나은 방향을 만드는 컴퓨터공학도입니다.</p>
 
+        <!-- 핵심 키워드 뱃지 목록 -->
         <div class="hero__keywords" aria-label="핵심 키워드">
           <span>Observation</span>
           <span>Reasoning</span>
@@ -70,29 +85,35 @@
         </div>
       </div>
 
+      <!-- 배경 장식용 원형 - 콘텐츠와 무관하므로 스크린리더에서 제외 -->
       <div class="hero__bg-circle hero__bg-circle--1" aria-hidden="true"></div>
       <div class="hero__bg-circle hero__bg-circle--2" aria-hidden="true"></div>
     </section>
 
-    <!-- ===== ABOUT: 자기소개 섹션 ===== -->
+    <!-- 자기소개 섹션 -->
     <section class="about section" id="about">
       <div class="container">
         <h2 class="section__title animate-on-scroll">About Me</h2>
         <p class="section__subtitle animate-on-scroll">#05년생 #사유하는태도 #INFJ #중재형리더</p>
 
         <div class="about__content">
+
+          <!-- 프로필 이미지 영역 -->
           <div class="about__image animate-on-scroll">
+            <!-- 이미지 로드 실패 시 JS가 이 요소를 hidden 처리하고 아래 placeholder를 보여줌 -->
             <img
               src="images/profile.png"
               alt="김현서 프로필 사진"
               class="about__photo"
               id="profile-img"
             />
+            <!-- 이미지가 없을 때 대신 나오는 아이콘 - 기본적으로 숨겨져 있음 -->
             <div class="about__photo-placeholder hidden" id="profile-placeholder" aria-hidden="true">
               <i class="fas fa-user"></i>
             </div>
           </div>
 
+          <!-- 소개 텍스트 + 카드 + 연락처 영역 -->
           <div class="about__text animate-on-scroll">
             <p>
               저는 컴퓨터공학을 공부하며 프로그래밍, 웹 개발, CS, 클라우드, 인프라, 인공지능 등<br>
@@ -106,10 +127,12 @@
               앞으로는 그 태도로 신뢰받는 소프트웨어를 만들고, 작더라도 분명한 이로움을 남기는 개발자가 되고 싶습니다.
             </p>
 
+            <!-- 강점 3가지를 카드로 요약 -->
             <div class="about__cards" aria-label="강점 요약">
               <article class="about-card">
                 <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
                 <h3>관찰</h3>
+                <!-- br로 줄바꿈 위치를 직접 지정 - 자동 줄바꿈이 어색한 위치에 생기는 걸 방지 -->
                 <p>문제를 바로 판단하기보다<br>맥락과 흐름을 먼저 살핍니다.</p>
               </article>
               <article class="about-card">
@@ -124,9 +147,12 @@
               </article>
             </div>
 
+            <!-- 연락처 정보 목록 -->
             <ul class="about__info" aria-label="연락처 정보">
+              <!-- mailto: 로 메일 클라이언트 바로 열기 -->
               <li><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:tangled0125@gmail.com">tangled0125@gmail.com</a></li>
               <li><i class="fab fa-discord" aria-hidden="true"></i> whoareyou911</li>
+              <!-- target="_blank"로 새 탭, rel="noopener"는 보안상 필요 -->
               <li><i class="fab fa-github" aria-hidden="true"></i> <a href="https://github.com/RIIZE0904" target="_blank" rel="noopener">RIIZE0904</a></li>
             </ul>
           </div>
@@ -134,13 +160,15 @@
       </div>
     </section>
 
-    <!-- ===== JOURNEY: 성장 과정 섹션 ===== -->
+    <!-- 성장 과정 타임라인 섹션 -->
     <section class="journey section" id="journey">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Journey</h2>
         <p class="section__subtitle animate-on-scroll">지금까지의 학습과 활동 흐름입니다.</p>
 
+        <!-- 세로 타임라인 - CSS ::before로 왼쪽에 선과 점을 그려서 시각적으로 연결 -->
         <div class="journey__timeline">
+
           <article class="journey-item animate-on-scroll">
             <div class="journey-item__date">2024</div>
             <div class="journey-item__content">
@@ -180,18 +208,23 @@
               <p>웹, CS, 클라우드, 인프라, AI 등 다양한 기술 기반을 확장하고 있습니다.</p>
             </div>
           </article>
+
         </div>
       </div>
     </section>
 
-    <!-- ===== SKILLS: 기술 스택 섹션 ===== -->
+    <!-- 기술 스택 카드 섹션 -->
     <section class="skills section" id="skills">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Skills</h2>
         <p class="section__subtitle animate-on-scroll">현재 학습하고 활용 중인 기술 기반입니다.</p>
 
+        <!-- CSS Grid로 카드를 반응형 배치 -->
         <div class="skills__grid">
+
+          <!-- 각 skill-card는 article - 독립된 정보 단위라서 -->
           <article class="skill-card animate-on-scroll">
+            <!-- aria-hidden: 아이콘은 장식용이라 스크린리더가 읽지 않아도 됨 -->
             <i class="fab fa-html5 skill-card__icon" aria-hidden="true"></i>
             <h3 class="skill-card__name">HTML5</h3>
             <p class="skill-card__desc">시맨틱 마크업, 웹 접근성</p>
@@ -231,48 +264,61 @@
             <h3 class="skill-card__name">Git</h3>
             <p class="skill-card__desc">버전 관리, 협업 흐름</p>
           </article>
+
         </div>
       </div>
     </section>
 
-    <!-- ===== PROJECTS: GitHub API 연동 섹션 ===== -->
+    <!-- GitHub API로 저장소를 실시간 렌더링하는 섹션 -->
     <section class="projects section" id="projects">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Projects</h2>
         <p class="section__subtitle animate-on-scroll">GitHub 저장소를 실시간으로 불러옵니다.</p>
 
+        <!-- aria-live="polite": 이 영역이 바뀌면 스크린리더가 자동으로 읽어줌 -->
         <div class="projects__status" aria-live="polite">
+
+          <!-- 기본적으로 로딩 상태 먼저 보여주고, API 결과에 따라 상태 교체 -->
           <div class="status status--loading" id="status-loading">
             <div class="spinner" aria-hidden="true"></div>
             <p>프로젝트를 불러오는 중...</p>
           </div>
 
+          <!-- API 요청 실패 시 표시 -->
           <div class="status status--error hidden" id="status-error">
             <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
             <p>프로젝트를 불러올 수 없습니다.</p>
+            <!-- 클릭 시 JS에서 fetchProjects() 재호출 -->
             <button class="btn btn--primary" id="retry-btn" type="button">다시 시도</button>
           </div>
 
+          <!-- 저장소가 하나도 없을 때 표시 -->
           <div class="status status--empty hidden" id="status-empty">
             <i class="fas fa-folder-open" aria-hidden="true"></i>
             <p>표시할 프로젝트가 없습니다.</p>
           </div>
+
         </div>
 
+        <!-- 카드들이 들어갈 그리드 - API 성공 시 JS가 innerHTML로 채워줌 -->
         <div class="projects__grid hidden" id="projects-grid"></div>
       </div>
     </section>
 
-    <!-- ===== CONTACT: 문의 폼 섹션 ===== -->
+    <!-- 문의 폼 섹션 - 실제 서버 전송 없이 유효성 검사만 처리 -->
     <section class="contact section" id="contact">
       <div class="container">
         <h2 class="section__title animate-on-scroll">Contact</h2>
         <p class="section__subtitle animate-on-scroll">함께 이야기하고 싶은 내용이 있다면 편하게 남겨주세요.</p>
 
+        <!-- novalidate: 브라우저 기본 검사를 끄고 JS로 직접 처리 -->
         <form class="contact__form animate-on-scroll" id="contact-form" novalidate>
+
           <div class="form-group">
+            <!-- for와 id 연결 - 라벨 클릭하면 입력창에 포커스 -->
             <label for="name">이름 <span class="required">*</span></label>
             <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" autocomplete="name" />
+            <!-- JS에서 textContent로 에러 메시지를 채워줌 -->
             <span class="form-error" id="name-error"></span>
           </div>
 
@@ -290,16 +336,19 @@
 
           <button type="submit" class="btn btn--primary btn--full">보내기</button>
 
+          <!-- 검사 통과 시 3초 동안 보이는 성공 메시지 -->
           <div class="form-success hidden" id="form-success">
             <i class="fas fa-check-circle" aria-hidden="true"></i>
             <p>메시지가 성공적으로 확인되었습니다. 감사합니다.</p>
           </div>
+
         </form>
       </div>
     </section>
+
   </main>
 
-  <!-- ===== FOOTER: 저작권 및 외부 링크 ===== -->
+  <!-- 저작권 및 외부 링크 -->
   <footer class="footer">
     <div class="container">
       <p>&copy; 2026 김현서. All rights reserved.</p>
@@ -314,8 +363,10 @@
     </div>
   </footer>
 
+  <!-- 스크롤 300px 넘으면 JS가 hidden 클래스를 제거해서 이 버튼이 나타남 -->
   <button class="scroll-top hidden" id="scroll-top" type="button" aria-label="맨 위로 이동">
     <i class="fas fa-arrow-up" aria-hidden="true"></i>
   </button>
+
 </body>
 </html>
